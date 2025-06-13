@@ -16,25 +16,35 @@ function getBullsAndCows(userInput, numberToGuess) {
   const inputArray = userInput.toString().split('');
   const guessArray = numberToGuess.toString().split('');
 
+  const matchedInput = Array(4).fill(false); // Marks bulls/cows in user input
+  const matchedGuess = Array(4).fill(false); // Marks bulls/cows in target
+
   let bulls = 0;
   let cows = 0;
 
+  // First pass: find bulls
   for (let i = 0; i < 4; i++) {
-    const indexOfCurrent = guessArray.findIndex((el) => el === inputArray[i]);
-
     if (inputArray[i] === guessArray[i]) {
       bulls++;
-    }
-
-    if (guessArray.includes(inputArray[i]) && i !== indexOfCurrent) {
-      cows++;
+      matchedInput[i] = true;
+      matchedGuess[i] = true;
     }
   }
 
-  return {
-    bulls,
-    cows,
-  };
+  // Second pass: find cows
+  for (let i = 0; i < 4; i++) {
+    if (matchedInput[i]) continue; // already a bull
+
+    for (let j = 0; j < 4; j++) {
+      if (!matchedGuess[j] && inputArray[i] === guessArray[j]) {
+        cows++;
+        matchedGuess[j] = true;
+        break;
+      }
+    }
+  }
+
+  return { bulls, cows };
 }
 
 module.exports = {
